@@ -1,0 +1,162 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Code Editor</title>
+
+    <style>
+ 
+    
+        * {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+body {
+    font-family:arial;
+  height: 100vh;
+  display: flex;
+}
+
+.code-area {
+    margin-top:45px;
+  display: flex;
+  flex-direction:column;
+  width: 30%;
+  background-color:#121212;
+  border-right:1px solid white;
+}
+
+.code-area textarea {
+  resize: vertical;
+outline:none;
+  width: 100%;
+  height: 33.33%;
+  font-size: 18px;
+  padding: 10px;
+  background-color:#121212;
+  color:lightgrey;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: lightgrey;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: lightgrey;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: lightgrey;
+}
+
+
+.preview-area {
+    margin-top:45px;
+  width: 70%;
+}
+
+.preview-area iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+header{
+    width:100%;
+    position:fixed;
+    top:0;
+    height:45px;
+    z-index:99;
+    background-color:black;
+    color:white;
+    border-bottom:1px solid white;
+}
+    </style>
+</head>
+<body onload="defaulttext()">
+    <header>
+        <table border=0 width="100%" height="45px">
+            <tr>
+                <td style='font-size:22px;'>&nbsp;&nbsp;<a target="_blank" href='https://www.codingplex.xyz/' style='text-decoration :none;color:white;'><b><font color="red">C</font>oding <font color="yellow">PLEX</font></b></a></td>
+                <td width="150px"><center><button onclick='saveTextAsFile()' style="background-color:green;color:white;padding:8px;cursor:pointer;border-radius:8px;width:100%;border:2px solid green;"><i class="fa fa-download"></i> &nbsp;&nbsp;Download Code</button></center></td>
+            </tr>
+        </table>
+    </header>
+    <div class="code-area">
+        <textarea id="htmlCode" style='color:#fffef2;' spellcheck="false" placeholder="HTML Code" 
+                  oninput="showPreview()"></textarea>
+        <textarea id="cssCode" style='font-style: italic;color:#afcda5;' spellcheck="false" placeholder="CSS Code" 
+                  oninput="showPreview()"></textarea>
+        <textarea style='color:#feecc8;' id="jsCode" spellcheck="false" placeholder="JavaScript Code" 
+                  oninput="showPreviewJavascript()"></textarea>			
+      </div>
+      <div class="preview-area">
+        <iframe id="preview-window"></iframe>
+      </div>
+
+      <script>
+        function defaulttext()
+        {
+            var cssCode= "body{font-family: system-ui;background:#121212;color: white;text-align: center;font-size:3vw;display:flex;align-items: center;justify-content: center;}";
+            var frame = document.getElementById("preview-window").contentWindow.document;
+            frame.open();
+            frame.write("<h1>👋 Hello World!</h1>"+"<style>"+cssCode+"</style>");
+            frame.close();
+        }
+      
+          function showPreview(){
+            var htmlCode = document.getElementById("htmlCode").value;
+            var cssCode = document.getElementById("cssCode").value;
+            var frame = document.getElementById("preview-window").contentWindow.document;
+            frame.open();
+            frame.write(htmlCode+"<style>"+cssCode+"</style>");
+            frame.close();
+        }
+
+        function saveTextAsFile() {
+
+            var name = prompt("Please Enter File Name :");
+            if (name != null && name != "") {
+                var fileNameToSaveAs = name+".html";
+                var htmlCode = document.getElementById("htmlCode").value;
+                var cssCode = document.getElementById("cssCode").value;
+                var jsCode = document.getElementById("jsCode").value;
+
+                textToWrite = '<!DOCTYPE html>\n<html lang="en">\n<head><meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Document</title>\n'+'<style>\n'+cssCode+'\n</style>\n'+'</head>\n<body>\n'+htmlCode+'\n\<script>\n'+jsCode+'\n\<\/script>\n</body>\n</html>';
+
+                var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
+                var downloadLink = document.createElement("a");
+                downloadLink.download = fileNameToSaveAs;
+                downloadLink.innerHTML = "Download File";
+                if (window.webkitURL != null) {
+                  downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+                }
+                else {
+                  downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+                  downloadLink.onclick = destroyClickedElement;
+                  downloadLink.style.display = "none";
+                  document.body.appendChild(downloadLink);
+                }
+                downloadLink.click();
+                }
+        }
+
+        function showPreviewJavascript(){
+            var htmlCode = document.getElementById("htmlCode").value;
+            var cssCode = document.getElementById("cssCode").value;
+            var jsCode = document.getElementById("jsCode").value;
+            var frame = document.getElementById("preview-window").contentWindow.document;
+            frame.open();
+            frame.write(htmlCode+"<style>"+cssCode+"</style>"+"\<script>"+jsCode+"\<\/script>");
+            frame.close();
+        }
+      </script>
+</body>
+</html>
